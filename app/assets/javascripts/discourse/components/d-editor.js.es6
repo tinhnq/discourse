@@ -472,10 +472,14 @@ export default Ember.Component.extend({
   },
 
   _addText(sel, text) {
+    const $textarea = this.$('textarea.d-editor-input');
     const insert = `${sel.pre}${text}`;
-    this.set('value', `${insert}${sel.post}`);
-    this._selectText(insert.length, 0);
-    Ember.run.scheduleOnce("afterRender", () => this.$("textarea.d-editor-input").focus());
+    const value = `${insert}${sel.post}`;
+    this.set('value', value);
+    $textarea.val(value);
+    $textarea.prop("selectionStart", insert.length);
+    $textarea.prop("selectionEnd", insert.length);
+    Ember.run.scheduleOnce("afterRender", () => $textarea.focus());
   },
 
   actions: {
@@ -487,6 +491,7 @@ export default Ember.Component.extend({
         applySurround: (head, tail, exampleKey) => this._applySurround(selected, head, tail, exampleKey),
         applyList: (head, exampleKey) => this._applyList(selected, head, exampleKey),
         addText: text => this._addText(selected, text),
+        getText: () => this.get('value'),
       };
 
       if (button.sendAction) {

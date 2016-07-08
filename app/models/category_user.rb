@@ -1,3 +1,5 @@
+require_dependency 'notification_levels'
+
 class CategoryUser < ActiveRecord::Base
   belongs_to :category
   belongs_to :user
@@ -10,9 +12,12 @@ class CategoryUser < ActiveRecord::Base
     self.where(user: user, category: category)
   end
 
-  # same for now
   def self.notification_levels
-    TopicUser.notification_levels
+    NotificationLevels.all
+  end
+
+  def self.watching_levels
+    [notification_levels[:watching], notification_levels[:watching_first_post]]
   end
 
   %w{watch track}.each do |s|
